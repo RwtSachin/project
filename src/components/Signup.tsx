@@ -17,7 +17,7 @@ function Signup({ onClose, setIsLoggedIn, setUser, switchToLogin }: SignupProps)
   const [adminCode, setAdminCode] = useState('');
   const [error, setError] = useState('');
 
-  const ADMIN_CODE = 'FUSION2024'; // In a real app, this would be stored securely
+  const ADMIN_CODE = 'fusion2023'; // In a real app, this would be stored securely
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
