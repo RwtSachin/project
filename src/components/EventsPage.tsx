@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Flame } from 'lucide-react';
 
 function EventsPage({ user, handleLogout }: any) {
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState('All Categories');
+  const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
 
   const events = [
     {
@@ -28,6 +29,26 @@ function EventsPage({ user, handleLogout }: any) {
       description: 'Design and prototype a game in just 48 hours! Work in teams or solo to create something amazing.'
     }
   ];
+
+  // Load registered events from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('registeredEvents');
+    if (stored) {
+      setRegisteredEvents(JSON.parse(stored));
+    }
+  }, []);
+
+  const handleRegister = (id: number, title: string) => {
+    if (registeredEvents.includes(id)) {
+      alert(`You have already registered for "${title}".`);
+      return;
+    }
+
+    const updated = [...registeredEvents, id];
+    setRegisteredEvents(updated);
+    localStorage.setItem('registeredEvents', JSON.stringify(updated));
+    alert(`Successfully registered for "${title}"!`);
+  };
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -98,9 +119,19 @@ function EventsPage({ user, handleLogout }: any) {
                   <span className="bg-orange-500/20 text-orange-500 px-3 py-1 rounded-full text-sm">
                     {event.category}
                   </span>
-                  <p className="mt-4 text-gray-300">
-                    {event.description}
-                  </p>
+                  <p className="mt-4 text-gray-300">{event.description}</p>
+
+                  <button
+                    onClick={() => handleRegister(event.id, event.title)}
+                    className={`mt-6 px-4 py-2 rounded-md transition-colors ${
+                      registeredEvents.includes(event.id)
+                        ? 'bg-gray-500 cursor-not-allowed'
+                        : 'bg-orange-500 hover:bg-orange-600'
+                    }`}
+                    disabled={registeredEvents.includes(event.id)}
+                  >
+                    {registeredEvents.includes(event.id) ? 'Registered' : 'Register'}
+                  </button>
                 </div>
               </div>
             </div>
